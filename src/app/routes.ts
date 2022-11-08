@@ -12,5 +12,6 @@ routes.get("/health/server-version", HealthController.serverVersion);
 
 // MIGRATE STAKE ----------------------------------------------------------------
 routes.post("/migrate/", MigrateStakeController.migrate);
+routes.post("/create/", MigrateStakeController.create);
 
 export default routes;
