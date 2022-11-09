@@ -24,7 +24,6 @@ class MigrateStakeController {
     migrate(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             const { walletAddress } = req.body;
-            console.log("Chegou");
             try {
                 // BUSCAR NO BANCO DE DADOS
                 const stake = yield StakeModel_1.default.findOne({ wallet: walletAddress });
@@ -41,19 +40,19 @@ class MigrateStakeController {
                 console.log(`Gas Price: ${gas_price}`);
                 // CHECAR SE PODE MOVIMENTAR TOKENS
                 let tokenContract = new ethers_1.ethers.Contract(TOKEN_ADDRESS, TokenABI_json_1.default, walletSigner);
-                let allowace = yield tokenContract.allowance(stake.wallet, PUBLIC_ADDRESS);
+                let allowace = yield tokenContract.allowance(stake.wallet.toLowerCase(), PUBLIC_ADDRESS);
                 if (parseFloat(ethers_1.ethers.utils.formatEther(allowace)) < parseFloat(stake.tokens) / Math.pow(10, 18))
                     return res.status(400).send({ message: "Movimentação de tokens bloqueada." });
                 // FAZER A TRANSFERENCIA DE TOKENS
                 let numberOfTokens = ethers_1.ethers.utils.parseUnits(stake.tokens, 0);
                 console.log(`N Tokens: ${numberOfTokens}`);
-                let transferResult = yield tokenContract.transferFrom(stake.wallet, PUBLIC_ADDRESS, numberOfTokens);
+                let transferResult = yield tokenContract.transferFrom(stake.wallet.toLowerCase(), PUBLIC_ADDRESS, numberOfTokens);
                 console.log(`Transfer Hash ${transferResult.hash}`);
                 // CRIAR O STAKE
                 let stakeContract = new ethers_1.ethers.Contract(STAKE_ADDRESS, StakeABI_json_1.default, walletSigner);
                 let startedAtStake = Math.trunc(stake.startedAt.getTime() / 1000);
                 let endAtStake = startedAtStake + 31536000;
-                let stakeResult = yield stakeContract.addCustomStake(stake.wallet, startedAtStake, endAtStake, numberOfTokens);
+                let stakeResult = yield stakeContract.addCustomStake(stake.wallet.toLowerCase(), startedAtStake, endAtStake, numberOfTokens);
                 console.log(`Stake Hash: ${stakeContract.hash}`);
                 stake.migrate = true;
                 stake.gasPrice = gas_price.toString();
@@ -129,61 +128,61 @@ class MigrateStakeController {
                     "0xbb7952327e76c6f373b3d7fd88b3fdf9c40d11e3",
                 ];
                 const tokens = [
-                    "560",
-                    "50",
-                    "476",
-                    "138",
-                    "100",
-                    "556",
-                    "60,17",
-                    "207",
-                    "585,121",
-                    "165",
-                    "200",
-                    "50",
-                    "100",
-                    "50",
-                    "19825",
-                    "71",
-                    "165",
-                    "31425",
-                    "1700000",
-                    "67",
-                    "86",
-                    "543",
-                    "282",
-                    "101363",
-                    "50",
-                    "552",
-                    "1588",
-                    "517",
-                    "57",
-                    "55",
-                    "118",
-                    "112",
-                    "11035",
-                    "14147",
-                    "36715",
-                    "14848",
-                    "54",
-                    "823",
-                    "50",
-                    "700",
-                    "140000",
-                    "70000",
-                    "39140",
-                    "16303",
-                    "258055",
-                    "2021",
-                    "552",
-                    "20999",
-                    "66812",
-                    "34715",
-                    "3267",
-                    "11547",
-                    "35265",
-                    "200",
-                    "10321",
+                    "560000000000000000000",
+                    "50000000000000000000",
+                    "476000000000000000000",
+                    "138000000000000000000",
+                    "100000000000000000000",
+                    "556000000000000000000",
+                    "60,17000000000000000000",
+                    "207000000000000000000",
+                    "585,121000000000000000000",
+                    "165000000000000000000",
+                    "200000000000000000000",
+                    "50000000000000000000",
+                    "100000000000000000000",
+                    "50000000000000000000",
+                    "19825000000000000000000",
+                    "71000000000000000000",
+                    "165000000000000000000",
+                    "31425000000000000000000",
+                    "1700000000000000000000000",
+                    "67000000000000000000",
+                    "86000000000000000000",
+                    "543000000000000000000",
+                    "282000000000000000000",
+                    "101363000000000000000000",
+                    "50000000000000000000",
+                    "552000000000000000000",
+                    "1588000000000000000000",
+                    "517000000000000000000",
+                    "57000000000000000000",
+                    "55000000000000000000",
+                    "118000000000000000000",
+                    "112000000000000000000",
+                    "11035000000000000000000",
+                    "14147000000000000000000",
+                    "36715000000000000000000",
+                    "14848000000000000000000",
+                    "54000000000000000000",
+                    "823000000000000000000",
+                    "50000000000000000000",
+                    "700000000000000000000",
+                    "140000000000000000000000",
+                    "70000000000000000000000",
+                    "39140000000000000000000",
+                    "16303000000000000000000",
+                    "258055000000000000000000",
+                    "2021000000000000000000",
+                    "552000000000000000000",
+                    "20999000000000000000000",
+                    "66812000000000000000000",
+                    "34715000000000000000000",
+                    "3267000000000000000000",
+                    "11547000000000000000000",
+                    "35265000000000000000000",
+                    "200000000000000000000",
+                    "10321000000000000000000",
                 ];
                 const timestamp = [
                     1659711720, 1659712020, 1659714000, 1659714060, 1659714060, 1659714840, 1659715080, 1659716580, 1659720540, 1659721740, 1659723120, 1659728760, 1659732300, 1659748920, 1659777540,
@@ -199,12 +198,21 @@ class MigrateStakeController {
                 //     };
                 //     await StakeModel.create(data);
                 // }
-                var data = {
-                    wallet: "0x72f6cb158de7b9c773ed0cf73084cf9a0f3bf0ca",
-                    tokens: "50000000000000000000",
-                    startedAt: Date.now(),
-                };
-                yield StakeModel_1.default.create(data);
+                // var data = {
+                //     wallet: "0x72f6cb158de7b9c773ed0cf73084cf9a0f3bf0ca",
+                //     tokens: "50000000000000000000",
+                //     startedAt: Date.now(),
+                // };
+                // await StakeModel.create(data);
+                // const NODE_URL = "https://bsc-dataseed.binance.org/";
+                // const provider = new ethers.providers.JsonRpcProvider(NODE_URL);
+                // let wallet = new ethers.Wallet(PRIVATE_KEY!);
+                // let walletSigner = wallet.connect(provider);
+                // let stakeContract = new ethers.Contract(STAKE_ADDRESS, StakeContract, walletSigner);
+                // let startedAtStake = Math.trunc(1660574280);
+                // let endAtStake = startedAtStake + 31536000;
+                // let stakeResult = await stakeContract.addCustomStake("0x985728c6d2884cbca5f6eb9be15be376baf3baf1", startedAtStake, endAtStake, "101363000000000000000000");
+                // console.log(`Stake Hash: ${stakeContract.hash}`);
                 return res.status(200).send({ message: "Ok" });
             }
             catch (_a) {
