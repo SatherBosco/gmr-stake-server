@@ -44,7 +44,7 @@ class MigrateStakeController {
             let endAtStake = startedAtStake + 31536000;
 
             let stakeResult = await stakeContract.addCustomStake(stake.wallet.toLowerCase(), startedAtStake, endAtStake, numberOfTokens);
-            console.log(`Stake Hash: ${stakeContract.hash}`);
+            console.log(`Stake Hash: ${stakeResult.hash}`);
 
             stake.migrate = true;
             stake.gasPrice = gas_price.toString();
