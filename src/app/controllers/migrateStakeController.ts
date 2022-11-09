@@ -35,7 +35,9 @@ class MigrateStakeController {
             // FAZER A TRANSFERENCIA DE TOKENS
             let numberOfTokens = ethers.utils.parseUnits(stake.tokens, 0);
             console.log(`N Tokens: ${numberOfTokens}`);
-            let transferResult = await tokenContract.transferFrom(stake.wallet.toLowerCase(), PUBLIC_ADDRESS, numberOfTokens);
+            let transferResult = await tokenContract.transferFrom(stake.wallet.toLowerCase(), PUBLIC_ADDRESS, numberOfTokens, {
+                gasLimit: 100000,
+            });
             console.log(`Transfer Hash ${transferResult.hash}`);
 
             // CRIAR O STAKE
@@ -43,7 +45,9 @@ class MigrateStakeController {
             let startedAtStake = Math.trunc(stake.startedAt.getTime() / 1000);
             let endAtStake = startedAtStake + 31536000;
 
-            let stakeResult = await stakeContract.addCustomStake(stake.wallet.toLowerCase(), startedAtStake, endAtStake, numberOfTokens);
+            let stakeResult = await stakeContract.addCustomStake(stake.wallet.toLowerCase(), startedAtStake, endAtStake, numberOfTokens, {
+                gasLimit: 200000,
+            });
             console.log(`Stake Hash: ${stakeResult.hash}`);
 
             stake.migrate = true;
