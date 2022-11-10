@@ -5,6 +5,8 @@ export interface StakeInput {
     tokens: string;
     startedAt: Date;
     migrate: boolean;
+    bnb: boolean;
+    bnbHash: string;
     gasPrice: string;
     transferTransactHash: string;
     stakeTransactHash: string;
@@ -32,6 +34,14 @@ const StakeSchema = new mongoose.Schema({
     migrate: {
         type: Boolean,
         default: false,
+    },
+    bnb: {
+        type: Boolean,
+        default: false,
+    },
+    bnbHash: {
+        type: String,
+        default: "",
     },
     gasPrice: {
         type: String,

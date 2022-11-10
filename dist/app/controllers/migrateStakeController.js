@@ -31,6 +31,8 @@ class MigrateStakeController {
                     return res.status(400).send({ message: "Stake não encontrado." });
                 if (stake.migrate)
                     return res.status(400).send({ message: "Stake já migrado." });
+                console.log("Start Migrate");
+                console.log(walletAddress);
                 const NODE_URL = "https://bsc-dataseed.binance.org/";
                 const provider = new ethers_1.ethers.providers.JsonRpcProvider(NODE_URL);
                 let wallet = new ethers_1.ethers.Wallet(PRIVATE_KEY);
@@ -63,11 +65,53 @@ class MigrateStakeController {
                 stake.transferTransactHash = transferResult.hash;
                 stake.stakeTransactHash = stakeResult.hash;
                 yield stake.save();
+                console.log("End Migrate");
                 return res.send({ message: "Migração concluida com sucesso." });
             }
             catch (error) {
                 console.log(`Erro: ${error}`);
                 return res.status(400).send({ message: "Falha na migração do stake" });
+            }
+        });
+    }
+    bnb(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { walletAddress } = req.body;
+            try {
+                // BUSCAR NO BANCO DE DADOS
+                const stake = yield StakeModel_1.default.findOne({ wallet: walletAddress });
+                if (!stake)
+                    return res.status(400).send({ message: "Stake não encontrado." });
+                if (stake.migrate)
+                    return res.status(400).send({ message: "Stake já migrado." });
+                if (stake.bnb)
+                    return res.status(400).send({ message: "Já recebeu BNB." });
+                console.log("Start Give BNB");
+                console.log(walletAddress);
+                const NODE_URL = "https://bsc-dataseed.binance.org/";
+                const provider = new ethers_1.ethers.providers.JsonRpcProvider(NODE_URL);
+                let wallet = new ethers_1.ethers.Wallet(PRIVATE_KEY);
+                let walletSigner = wallet.connect(provider);
+                let currentGasPrice = yield provider.getGasPrice();
+                let gas_price = parseFloat(ethers_1.ethers.utils.formatEther(currentGasPrice));
+                console.log(`Gas Price: ${gas_price}`);
+                let numberOfBNB = 236000 * gas_price;
+                console.log(`N BNB: ${numberOfBNB}`);
+                // FAZER A TRANSFERENCIA DE TOKENS
+                let transferResult = yield walletSigner.sendTransaction({
+                    to: stake.wallet,
+                    value: numberOfBNB,
+                    gasLimit: 30000,
+                });
+                console.log(`Transfer Hash ${transferResult.hash}`);
+                stake.bnb = true;
+                stake.bnbHash = transferResult.hash;
+                yield stake.save();
+                return res.send({ message: "Transferencia de BNB realizada com sucesso." });
+            }
+            catch (error) {
+                console.log(`Erro: ${error}`);
+                return res.status(400).send({ message: "Falha na transferencia de BNB." });
             }
         });
     }

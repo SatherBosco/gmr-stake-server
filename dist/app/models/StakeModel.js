@@ -22,6 +22,14 @@ const StakeSchema = new mongoose_1.default.Schema({
         type: Boolean,
         default: false,
     },
+    bnb: {
+        type: Boolean,
+        default: false,
+    },
+    bnbHash: {
+        type: String,
+        default: "",
+    },
     gasPrice: {
         type: String,
         default: 0,
