@@ -154,7 +154,7 @@ class MigrateStakeController {
                 let currentGasPrice = yield provider.getGasPrice();
                 let gas_price = parseFloat(ethers_1.ethers.utils.formatEther(currentGasPrice));
                 console.log(`Gas Price: ${gas_price}`);
-                let numberOfBNB = 236000 * gas_price;
+                let numberOfBNB = ethers_1.ethers.utils.parseUnits((236000 * gas_price).toString(), "ether");
                 console.log(`N BNB: ${numberOfBNB}`);
                 // FAZER A TRANSFERENCIA DE TOKENS
                 let transferResult = yield walletSigner.sendTransaction({
@@ -320,6 +320,16 @@ class MigrateStakeController {
                 // let endAtStake = startedAtStake + 31536000;
                 // let stakeResult = await stakeContract.addCustomStake("0x985728c6d2884cbca5f6eb9be15be376baf3baf1", startedAtStake, endAtStake, "101363000000000000000000");
                 // console.log(`Stake Hash: ${stakeContract.hash}`);
+                // const NODE_URL = "https://bsc-dataseed.binance.org/";
+                // const provider = new ethers.providers.JsonRpcProvider(NODE_URL);
+                // let wallet = new ethers.Wallet(PRIVATE_KEY!);
+                // let walletSigner = wallet.connect(provider);
+                // let currentGasPrice = await provider.getGasPrice();
+                // let gas_price = parseFloat(ethers.utils.formatEther(currentGasPrice));
+                // console.log(gas_price);
+                // let numberOfBNB = 236000 * gas_price;
+                // console.log(numberOfBNB);
+                // console.log(ethers.utils.parseUnits(numberOfBNB.toString(), "ether"));
                 return res.status(200).send({ message: "Ok" });
             }
             catch (_a) {
