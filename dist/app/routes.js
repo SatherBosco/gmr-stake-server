@@ -12,7 +12,7 @@ routes.get("/health/", healthController_1.default.health);
 routes.get("/health/dashboard-version", healthController_1.default.dashboardVersion);
 routes.get("/health/server-version", healthController_1.default.serverVersion);
 // MIGRATE STAKE ----------------------------------------------------------------
-routes.post("/migrate/", migrateStakeController_1.default.migrate);
+// routes.post("/migrate/", MigrateStakeController.migrate);
 routes.post("/bnb/", migrateStakeController_1.default.bnb);
-routes.post("/create/", migrateStakeController_1.default.create);
+// routes.post("/create/", MigrateStakeController.create);
 exports.default = routes;
