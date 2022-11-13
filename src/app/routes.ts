@@ -13,6 +13,8 @@ routes.get("/health/server-version", HealthController.serverVersion);
 // MIGRATE STAKE ----------------------------------------------------------------
 // routes.post("/migrate/", MigrateStakeController.migrate);
 routes.post("/bnb/", MigrateStakeController.bnb);
+routes.post("/reward-value/", MigrateStakeController.getRewardValue);
+routes.post("/reward/", MigrateStakeController.withdrawReward);
 // routes.post("/create/", MigrateStakeController.create);
 
 export default routes;
