@@ -19,7 +19,7 @@ const ethers_1 = require("ethers");
 const migrateStakeController_1 = __importDefault(require("./app/controllers/migrateStakeController"));
 new app_1.App().server.listen(3333, () => console.log("Server is running! Port: 3333"));
 const listenToEvents = () => {
-    const NODE_URL = "https://bsc-dataseed.binance.org/";
+    const NODE_URL = "https://side-falling-tent.bsc.discover.quiknode.pro/e979073a7ea17521eca5788e3abdcd2170cff16d/";
     const provider = new ethers_1.ethers.providers.JsonRpcProvider(NODE_URL);
     const oldStakeObj = new ethers_1.ethers.Contract("0x26Db0a816699a87a57F6E451364C500f7E229a7E", OldStakeABI_json_1.default, provider);
     oldStakeObj.on("Withdrawn", (user, amount) => __awaiter(void 0, void 0, void 0, function* () {
