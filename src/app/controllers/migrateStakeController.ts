@@ -189,8 +189,7 @@ class MigrateStakeController {
 
         try {
             const stake = await StakeModel.findOne({ wallet: walletAddress });
-            if (!stake) return res.send({ qtde: 0 });
-            if (!stake.migrate) return res.send({ qtde: 0 });
+            if (!stake?.migrate) return res.send({ qtde: 0 });
 
             const reward = await RewardModel.findOne({ wallet: walletAddress });
             if (!reward) return res.send({ qtde: 0 });
@@ -198,7 +197,6 @@ class MigrateStakeController {
 
             return res.send({ qtde: reward.tokens });
         } catch (error) {
-            console.log(`Erro: ${error}`);
             return res.status(400).send({ message: "Falha ao buscar no banco de dados." });
         }
     }
