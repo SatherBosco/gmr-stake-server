@@ -189,8 +189,6 @@ class MigrateStakeController {
 
         try {
             const stake = await StakeModel.findOne({ wallet: walletAddress });
-            if (!stake?.migrate) return res.send({ qtde: 0 });
-
             const reward = await RewardModel.findOne({ wallet: walletAddress });
             if (!reward) return res.send({ qtde: 0 });
             if (reward.withdraw) return res.send({ qtde: 0 });

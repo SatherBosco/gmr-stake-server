@@ -182,8 +182,6 @@ class MigrateStakeController {
             const { walletAddress } = req.body;
             try {
                 const stake = yield StakeModel_1.default.findOne({ wallet: walletAddress });
-                if (!(stake === null || stake === void 0 ? void 0 : stake.migrate))
-                    return res.send({ qtde: 0 });
                 const reward = yield RewardModel_1.default.findOne({ wallet: walletAddress });
                 if (!reward)
                     return res.send({ qtde: 0 });
