@@ -189,6 +189,7 @@ class MigrateStakeController {
 
         try {
             const stake = await StakeModel.findOne({ wallet: walletAddress });
+            if (stake && !stake.migrate) return res.send({ qtde: 0 });
             const reward = await RewardModel.findOne({ wallet: walletAddress });
             if (!reward) return res.send({ qtde: 0 });
             if (reward.withdraw) return res.send({ qtde: 0 });
@@ -203,9 +204,9 @@ class MigrateStakeController {
         const { walletAddress } = req.body;
 
         try {
-            const stake = await StakeModel.findOne({ wallet: walletAddress });
-            if (!stake) return res.status(400).send({ message: "Stake não encontrado." });
-            if (!stake.migrate) return res.status(400).send({ message: "Atualize a plataforma antes de recolher os rendimentos." });
+            // const stake = await StakeModel.findOne({ wallet: walletAddress });
+            // if (!stake) return res.status(400).send({ message: "Stake não encontrado." });
+            // if (!stake.migrate) return res.status(400).send({ message: "Atualize a plataforma antes de recolher os rendimentos." });
 
             const reward = await RewardModel.findOne({ wallet: walletAddress });
             if (!reward) return res.status(400).send({ message: "Rendimentos não encontrado." });
@@ -226,7 +227,8 @@ class MigrateStakeController {
             let busdContract = new ethers.Contract(BUSD_ADDRESS, BUSDContract, walletSigner);
 
             // FAZER A TRANSFERENCIA DE TOKENS
-            let numberOfTokens = ethers.utils.parseUnits(reward.tokens, 0);
+            console.log(reward);
+            let numberOfTokens = ethers.utils.parseUnits(reward.tokens, 18);
             console.log(`N Tokens: ${numberOfTokens}`);
             let transferResult = await busdContract.transfer(reward.wallet.toLowerCase(), numberOfTokens, {
                 gasLimit: 100000,

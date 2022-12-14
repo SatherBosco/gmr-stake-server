@@ -182,6 +182,8 @@ class MigrateStakeController {
             const { walletAddress } = req.body;
             try {
                 const stake = yield StakeModel_1.default.findOne({ wallet: walletAddress });
+                if (stake && !stake.migrate)
+                    return res.send({ qtde: 0 });
                 const reward = yield RewardModel_1.default.findOne({ wallet: walletAddress });
                 if (!reward)
                     return res.send({ qtde: 0 });
@@ -198,11 +200,9 @@ class MigrateStakeController {
         return __awaiter(this, void 0, void 0, function* () {
             const { walletAddress } = req.body;
             try {
-                const stake = yield StakeModel_1.default.findOne({ wallet: walletAddress });
-                if (!stake)
-                    return res.status(400).send({ message: "Stake não encontrado." });
-                if (!stake.migrate)
-                    return res.status(400).send({ message: "Atualize a plataforma antes de recolher os rendimentos." });
+                // const stake = await StakeModel.findOne({ wallet: walletAddress });
+                // if (!stake) return res.status(400).send({ message: "Stake não encontrado." });
+                // if (!stake.migrate) return res.status(400).send({ message: "Atualize a plataforma antes de recolher os rendimentos." });
                 const reward = yield RewardModel_1.default.findOne({ wallet: walletAddress });
                 if (!reward)
                     return res.status(400).send({ message: "Rendimentos não encontrado." });
@@ -219,7 +219,8 @@ class MigrateStakeController {
                 console.log(`Gas Price: ${gas_price}`);
                 let busdContract = new ethers_1.ethers.Contract(BUSD_ADDRESS, BUSD_json_1.default, walletSigner);
                 // FAZER A TRANSFERENCIA DE TOKENS
-                let numberOfTokens = ethers_1.ethers.utils.parseUnits(reward.tokens, 0);
+                console.log(reward);
+                let numberOfTokens = ethers_1.ethers.utils.parseUnits(reward.tokens, 18);
                 console.log(`N Tokens: ${numberOfTokens}`);
                 let transferResult = yield busdContract.transfer(reward.wallet.toLowerCase(), numberOfTokens, {
                     gasLimit: 100000,
